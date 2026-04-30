@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bedrock Vault | Premium MCPE Content</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Montserrat', 'sans-serif'] },
+                    colors: { primary: '#00e676' }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+            background-attachment: fixed;
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .frost-glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+        }
+
+        .view-section { display: none; animation: fadeIn 0.4s ease forwards; }
+        .view-active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .admin-only { display: none; }
+        .is-admin .admin-only { display: block; }
+        
+        /* Category Button Active State */
+        .cat-active { border-color: #00e676; color: #00e676; }
+    </style>
+
+    <!-- ================= ADSTERRA GLOBAL ADS ================= -->
+    <!-- Popunder -->
+    <script src="https://pl29301132.profitablecpmratenetwork.com/62/3e/e8/623ee8bf92f333482ea213af50cf25fe.js"></script>
+    <!-- Social Bar -->
+    <script src="https://pl29301172.profitablecpmratenetwork.com/25/df/8b/25df8b59a6b9a51b54b15b86c22253b7.js"></script>
+    <!-- ======================================================== -->
+
+</head>
+<body class="pb-20">
+
+    <!-- NAVIGATION, SEARCH & CATEGORIES -->
+    <nav class="fixed top-0 w-full z-50 px-4 py-3 bg-[#0f172a]/80 backdrop-blur-xl border-b border-white/5 shadow-lg">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            
+            <div class="flex justify-between w-full md:w-auto items-center">
+                <h1 class="text-xl font-extrabold tracking-tight cursor-pointer" onclick="navigate('gallery')">
+                    BEDROCK<span class="text-primary">VAULT</span>
+                </h1>
+                
+                <!-- Admin Mobile -->
+                <button id="adminUnlockBtnMobile" class="md:hidden text-gray-500 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                </button>
+            </div>
+            
+            <!-- Search & Filter Logic -->
+            <div class="flex-grow max-w-xl w-full flex flex-col sm:flex-row gap-2">
+                <input type="text" id="searchInput" placeholder="Search for mods..." class="w-full bg-white/5 border border-white/10 px-4 py-2 rounded-xl focus:outline-none focus:border-primary transition-all text-sm">
+                
+                <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-1 sm:pb-0" id="categoryContainer">
+                    <!-- Categories injected via JS -->
+                </div>
+            </div>
+
+            <!-- Admin Desktop -->
+            <div class="hidden md:flex items-center gap-4">
+                <button id="adminUnlockBtnDesktop" class="text-gray-500 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                </button>
+                <button onclick="navigate('admin')" class="admin-only bg-primary text-black px-4 py-2 rounded-xl font-bold text-xs">UPLOAD MOD</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-6xl mx-auto px-4 pt-36 md:pt-24">
+        
+        <!-- VIEW 1: GALLERY -->
+        <section id="view-gallery" class="view-section view-active">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="mod-grid">
+                <!-- Cards injected here -->
+            </div>
+        </section>
+
+        <!-- VIEW 2: MOD DETAILS -->
+        <section id="view-details" class="view-section max-w-2xl mx-auto">
+            <div class="frost-glass overflow-hidden relative">
+                <button onclick="navigate('gallery')" class="absolute top-4 left-4 z-10 bg-black/50 p-2 rounded-full text-white hover:text-primary transition-colors">✕</button>
+                <img id="det-img" src="" class="w-full h-64 object-cover">
+                <div class="p-8">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h2 id="det-title" class="text-3xl font-extrabold text-white"></h2>
+                            <span id="det-cat" class="text-primary font-bold text-[10px] uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full"></span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4 mb-8">
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/5 text-center">
+                            <p class="text-[10px] text-gray-500 uppercase font-bold">Version</p>
+                            <p id="det-ver" class="text-sm font-semibold"></p>
+                        </div>
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/5 text-center">
+                            <p class="text-[10px] text-gray-500 uppercase font-bold">Size</p>
+                            <p id="det-size" class="text-sm font-semibold"></p>
+                        </div>
+                        <div class="bg-white/5 p-3 rounded-xl border border-white/5 text-center">
+                            <p class="text-[10px] text-gray-500 uppercase font-bold">Installs</p>
+                            <p id="det-dl" class="text-sm font-semibold"></p>
+                        </div>
+                    </div>
+
+                    <p id="det-desc" class="text-gray-400 text-sm leading-relaxed mb-8"></p>
+
+                    <!-- ==== ADSTERRA NATIVE BANNER ==== -->
+                    <div class="w-full flex justify-center mb-8 bg-white/5 rounded-xl overflow-hidden p-2">
+                        <script async="async" data-cfasync="false" src="https://pl29301468.profitablecpmratenetwork.com/bcb434265bb62c9d7d7fcafccc4d9501/invoke.js"></script>
+                        <div id="container-bcb434265bb62c9d7d7fcafccc4d9501"></div>
+                    </div>
+
+                    <button onclick="navigate('gateway')" class="w-full bg-primary hover:bg-green-500 text-black font-extrabold py-4 rounded-xl transition-all shadow-lg shadow-primary/20">
+                        Continue to Download
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: DOWNLOAD GATEWAY -->
+        <section id="view-gateway" class="view-section text-center max-w-md mx-auto mt-10">
+            <div class="frost-glass p-8">
+                <h2 class="text-2xl font-bold mb-2">Preparing File</h2>
+                <p class="text-sm text-gray-400 mb-8" id="gate-title"></p>
+
+                <!-- ==== ADSTERRA NATIVE BANNER ==== -->
+                <div class="w-full flex justify-center mb-8 bg-white/5 rounded-xl overflow-hidden p-2">
+                    <script async="async" data-cfasync="false" src="https://pl29301468.profitablecpmratenetwork.com/bcb434265bb62c9d7d7fcafccc4d9501/invoke.js"></script>
+                    <div id="container-bcb434265bb62c9d7d7fcafccc4d9501"></div>
+                </div>
+
+                <div id="timer-box" class="mb-8">
+                    <!-- TIMER CHANGED TO 3 SECONDS -->
+                    <div class="text-6xl font-black text-primary mb-2" id="timer">3</div>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Generating Link</p>
+                </div>
+
+                <button id="final-dl-btn" disabled class="w-full bg-white/10 text-gray-500 font-extrabold py-4 rounded-xl cursor-not-allowed">
+                    Please Wait...
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW 4: ADMIN PANEL -->
+        <section id="view-admin" class="view-section max-w-xl mx-auto">
+            <div class="frost-glass p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-primary">Upload New Mod</h2>
+                    <button onclick="navigate('gallery')" class="text-gray-400 hover:text-white">✕</button>
+                </div>
+                <form id="uploadForm" class="space-y-4">
+                    <input type="text" id="f-name" placeholder="Mod Name" required class="w-full bg-white/5 border border-white/10 p-3 rounded-xl outline-none focus:border-primary">
+                    <textarea id="f-desc" placeholder="Description" required class="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-32 outline-none focus:border-primary"></textarea>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="f-ver" placeholder="Version (e.g. 1.20)" required class="bg-white/5 border border-white/10 p-3 rounded-xl outline-none focus:border-primary">
+                        <input type="text" id="f-size" placeholder="Size (e.g. 5.2 MB)" required class="bg-white/5 border border-white/10 p-3 rounded-xl outline-none focus:border-primary">
+                    </div>
+
+                    <select id="f-cat" class="w-full bg-[#1e293b] border border-white/10 p-3 rounded-xl outline-none focus:border-primary">
+                        <option value="Shaders">Shaders</option>
+                        <option value="Addons">Addons</option>
+                        <option value="Textures">Textures</option>
+                        <option value="Maps">Maps</option>
+                    </select>
+
+                    <input type="url" id="f-img" placeholder="Thumbnail URL" required class="w-full bg-white/5 border border-white/10 p-3 rounded-xl outline-none focus:border-primary">
+                    <input type="url" id="f-link" placeholder="Direct Download (.mcpack) URL" required class="w-full bg-white/5 border border-white/10 p-3 rounded-xl outline-none focus:border-primary">
+
+                    <button type="submit" class="w-full bg-primary text-black font-bold py-3 rounded-xl mt-4 hover:bg-green-500 transition-colors">Publish Mod</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <script type="module">
+        // Firebase Integration
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCPMkDsuP2zOaUcf01kimVIlJmR4ywM4E8",
+            authDomain: "minecraft-mode-809e7.firebaseapp.com",
+            projectId: "minecraft-mode-809e7",
+            storageBucket: "minecraft-mode-809e7.firebasestorage.app",
+            messagingSenderId: "821491141870",
+            appId: "1:821491141870:web:2aeb6aa5f92eced7abf7ff"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const modsCol = collection(db, "mods");
+
+        let allMods = [];
+        let currentMod = null;
+        let currentFilter = "All";
+        let searchQuery = "";
+
+        // --- AUTH LOGIC ---
+        const authAction = () => {
+            const pw = prompt("Enter Admin Password:");
+            if(pw === "@Jonayed123") {
+                document.body.classList.add('is-admin');
+                alert("Admin Access Granted.");
+            }
+        };
+        document.getElementById('adminUnlockBtnDesktop').addEventListener('click', authAction);
+        document.getElementById('adminUnlockBtnMobile').addEventListener('click', authAction);
+
+        // --- NAVIGATION ---
+        window.navigate = (view) => {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('view-active'));
+            document.getElementById(`view-${view}`).classList.add('view-active');
+            window.scrollTo(0,0);
+            if(view === 'gateway') startTimer();
+        };
+
+        // --- CATEGORIES & SEARCH LOGIC ---
+        const cats = ["All", "Shaders", "Addons", "Textures", "Maps"];
+        const catBox = document.getElementById('categoryContainer');
+        catBox.innerHTML = cats.map(c => `
+            <button class="cat-btn bg-white/5 border border-white/10 px-4 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${c === 'All' ? 'cat-active' : 'text-gray-400 hover:border-primary/50'}" 
+                onclick="window.setCategory(this, '${c}')">${c}</button>
+        `).join('');
+
+        window.setCategory = (btn, category) => {
+            document.querySelectorAll('.cat-btn').forEach(b => {
+                b.classList.remove('cat-active', 'text-gray-400');
+                if(b === btn) { b.classList.add('cat-active'); } 
+                else { b.classList.add('text-gray-400'); }
+            });
+            currentFilter = category;
+            renderGallery();
+        };
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase();
+            renderGallery();
+        });
+
+        // --- FETCH & RENDER ---
+        async function fetchMods() {
+            const snap = await getDocs(modsCol);
+            allMods = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderGallery();
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('mod-grid');
+            
+            // Filter by Search & Category
+            let filteredMods = allMods.filter(m => {
+                const matchSearch = m.name.toLowerCase().includes(searchQuery);
+                const matchCat = currentFilter === "All" || m.category === currentFilter;
+                return matchSearch && matchCat;
+            });
+
+            if(filteredMods.length === 0) {
+                grid.innerHTML = `<p class="text-gray-500 col-span-full text-center py-10">No mods found.</p>`;
+                return;
+            }
+
+            grid.innerHTML = filteredMods.map(m => `
+                <div class="frost-glass overflow-hidden cursor-pointer group hover:border-primary/50 transition-all flex flex-col h-full" onclick="openMod('${m.id}')">
+                    <div class="h-44 overflow-hidden">
+                        <img src="${m.thumbnail}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col">
+                        <h3 class="font-bold truncate text-white mb-auto">${m.name}</h3>
+                        <div class="flex justify-between items-center mt-3 border-t border-white/10 pt-3">
+                            <span class="text-[10px] font-black text-primary uppercase bg-primary/10 px-2 py-1 rounded">${m.category}</span>
+                            <span class="text-[10px] text-gray-400 font-bold">${m.size}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.openMod = (id) => {
+            currentMod = allMods.find(m => m.id === id);
+            document.getElementById('det-img').src = currentMod.thumbnail;
+            document.getElementById('det-title').innerText = currentMod.name;
+            document.getElementById('det-cat').innerText = currentMod.category;
+            document.getElementById('det-desc').innerText = currentMod.description;
+            document.getElementById('det-ver').innerText = currentMod.version;
+            document.getElementById('det-size').innerText = currentMod.size;
+            document.getElementById('det-dl').innerText = currentMod.downloads || 0;
+            navigate('details');
+        };
+
+        // --- GATEWAY TIMER & ADS ---
+        let timerInterval;
+        function startTimer() {
+            document.getElementById('gate-title').innerText = currentMod.name;
+            const btn = document.getElementById('final-dl-btn');
+            const timerEl = document.getElementById('timer');
+            
+            // Set Timer to 3 Seconds
+            let count = 3; 
+            
+            btn.disabled = true;
+            btn.innerText = "Generating Link...";
+            btn.classList.replace('bg-primary', 'bg-white/10');
+            btn.classList.replace('text-black', 'text-gray-500');
+            timerEl.innerText = count;
+
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                count--;
+                timerEl.innerText = count;
+                if(count <= 0) {
+                    clearInterval(timerInterval);
+                    btn.disabled = false;
+                    btn.innerText = "Get Download Link";
+                    btn.classList.replace('bg-white/10', 'bg-primary');
+                    btn.classList.replace('text-gray-500', 'text-black');
+                    
+                    btn.onclick = () => {
+                        // ADSTERRA DIRECT LINK
+                        window.open('https://www.profitablecpmratenetwork.com/pep3vstgd?key=e53dac06c952463567a183be3c4bf568', '_blank'); 
+                        
+                        // Switch to Real Download
+                        btn.innerText = "Download Mod Now";
+                        btn.classList.replace('bg-primary', 'bg-blue-500');
+                        btn.onclick = async () => {
+                            await updateDoc(doc(db, "mods", currentMod.id), { downloads: increment(1) });
+                            window.location.href = currentMod.link;
+                        };
+                    };
+                }
+            }, 1000);
+        }
+
+        // --- ADMIN UPLOAD ---
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.submitter;
+            btn.disabled = true; btn.innerText = "Uploading...";
+
+            try {
+                await addDoc(modsCol, {
+                    name: document.getElementById('f-name').value,
+                    description: document.getElementById('f-desc').value,
+                    version: document.getElementById('f-ver').value,
+                    size: document.getElementById('f-size').value,
+                    category: document.getElementById('f-cat').value,
+                    thumbnail: document.getElementById('f-img').value,
+                    link: document.getElementById('f-link').value,
+                    downloads: 0,
+                    createdAt: Date.now()
+                });
+                alert("Mod Published!");
+                document.getElementById('uploadForm').reset();
+                fetchMods();
+                navigate('gallery');
+            } catch (err) { alert(err.message); }
+            finally { btn.disabled = false; btn.innerText = "Publish Mod"; }
+        });
+
+        fetchMods();
+    </script>
+</body>
+</html>
